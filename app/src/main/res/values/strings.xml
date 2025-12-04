@@ -1,3 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">dot--simple-habit-tracker</string>
+    <string name="app_name">Dot: Habit Tracker</string>
+
+    <!--  Headers  -->
+    <string name="habit_screen_title">Habits</string>
+
+    <!--  Texts  -->
+    <string name="days_label">%1$d Days</string>
+
+
+    <!--  Actions  -->
+    <string name="action_add_habit">Add Habit</string>
 </resources>
