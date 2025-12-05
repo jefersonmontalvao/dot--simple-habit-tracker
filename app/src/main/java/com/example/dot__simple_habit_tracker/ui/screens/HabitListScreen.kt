@@ -1,5 +1,6 @@
 package com.example.dot__simple_habit_tracker.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,7 +34,11 @@ import com.example.dot__simple_habit_tracker.ui.viewmodels.HabitsViewModel
 
 
 @Composable
-fun InitHabitListScreen(viewModel: HabitsViewModel) {
+fun InitHabitListScreen(
+    viewModel: HabitsViewModel,
+    onAddClick: () -> Unit,
+    onHabitClick: (String) -> Unit
+) {
     /*Todo: HabitList*/
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -58,7 +63,7 @@ fun InitHabitListScreen(viewModel: HabitsViewModel) {
 
             HorizontalDivider(modifier = Modifier.padding(horizontal = 24.dp))
 
-            AddHabitButton(viewModel = viewModel)
+            AddHabitButton(viewModel = viewModel, onAddClick = onAddClick)
         }
     }
 }
@@ -78,11 +83,14 @@ fun HabitList(modifier: Modifier, habitList: List<Habit>) {
 }
 
 @Composable
-fun HabitItem(habit: Habit, isLastHabitItem: Boolean) {
+fun HabitItem(habit: Habit, isLastHabitItem: Boolean, onHabitClick: (String) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp, horizontal = 24.dp),
+            .padding(vertical = 16.dp, horizontal = 24.dp)
+            .clickable {
+                onHabitClick(habit.id)
+            },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -106,17 +114,14 @@ fun HabitItem(habit: Habit, isLastHabitItem: Boolean) {
 }
 
 @Composable
-fun AddHabitButton(viewModel: HabitsViewModel) {
+fun AddHabitButton(viewModel: HabitsViewModel, onAddClick: () -> Unit) {
     Surface(
         modifier = Modifier
             .padding(horizontal = 24.dp, vertical = 20.dp )
             .height(45.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(5.dp),
-        onClick = {
-        /*TODO: Add habit action
-        *  from viewModel*/
-        },
+        onClick = { onAddClick() },
         tonalElevation = 1.dp
     ) {
         Row(
