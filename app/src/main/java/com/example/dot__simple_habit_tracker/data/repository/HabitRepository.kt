@@ -3,7 +3,7 @@ package com.example.dot__simple_habit_tracker.data.repository
 import com.example.dot__simple_habit_tracker.data.local.database.dao.HabitDao
 import com.example.dot__simple_habit_tracker.data.mappers.toDomain
 import com.example.dot__simple_habit_tracker.data.mappers.toEntity
-import com.example.dot__simple_habit_tracker.domain.models.Habit
+import com.example.dot__simple_habit_tracker.domain.model.Habit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
