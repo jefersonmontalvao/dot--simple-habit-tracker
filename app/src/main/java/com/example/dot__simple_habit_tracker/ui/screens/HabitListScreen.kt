@@ -21,6 +21,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,7 +36,7 @@ import com.example.dot__simple_habit_tracker.ui.viewmodels.HabitsViewModel
 
 @Composable
 fun InitHabitListScreen(viewModel: HabitsViewModel) {
-    /*Todo: HabitList*/
+    val habits: List<Habit> by viewModel.habits.collectAsState(initial = emptyList())
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
@@ -54,7 +56,7 @@ fun InitHabitListScreen(viewModel: HabitsViewModel) {
             )
 
 
-            HabitList(modifier = Modifier.weight(1f), habitList = /*TODO*/)
+            HabitList(modifier = Modifier.weight(1f), habitList = habits)
 
             HorizontalDivider(modifier = Modifier.padding(horizontal = 24.dp))
 
