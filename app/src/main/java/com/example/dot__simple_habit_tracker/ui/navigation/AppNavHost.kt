@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.dot__simple_habit_tracker.ui.screens.InitHabitListScreen
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.dot__simple_habit_tracker.ui.screens.InitHabitDetailScreen
 
 @Composable
 fun AppNavHost() {
@@ -30,8 +31,14 @@ fun AppNavHost() {
             )
         }
 
-        composable(Screen.HabitDetail.route) {
-            // TODO
+        composable(Screen.HabitDetail.route) { backStackEnty ->
+            val viewModel: HabitsViewModel = hiltViewModel()
+            val habitId: String = backStackEnty.arguments?.getString("habitId")?: ""
+
+            InitHabitDetailScreen(
+                viewModel = viewModel,
+                habitId = habitId,
+                backAction = { navController.popBackStack() })
         }
 
         composable(Screen.AddHabit.route) {

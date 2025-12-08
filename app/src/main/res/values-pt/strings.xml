@@ -2,12 +2,37 @@
 <resources>
     <string name="app_name">Dot: Controle de Hábitos</string>
 
-    <!--  Headers  -->
+    <!-- HabitListScreen -->
+        <!-- ScreenHeader -->
     <string name="habit_screen_title">Hábitos</string>
 
-    <!--  Texts  -->
+        <!-- Label -->
     <string name="days_label">%1$d Dias</string>
 
-    <!--  Actions  -->
+        <!-- Action -->
     <string name="action_add_habit">Adicionar Hábito</string>
+
+    <!-- HabitDetailsScreen -->
+        <!-- Label -->
+    <string name="active_habit_for">Hábito Ativo Por</string>
+    <string name="_days">dias</string>
+    <string name="progress">PROGRESSO</string>
+    <string name="init_date_details">Início: %1$d de %2$s de %3$d</string>
+    <string name="total_days_details">Total de Dias: %1$d</string>
+
+    <string name="month_january">Janeiro</string>
+    <string name="month_february">Fevereiro</string>
+    <string name="month_march">Março</string>
+    <string name="month_april">Abril</string>
+    <string name="month_may">Maio</string>
+    <string name="month_june">Junho</string>
+    <string name="month_july">Julho</string>
+    <string name="month_august">Agosto</string>
+    <string name="month_september">Setembro</string>
+    <string name="month_october">Outubro</string>
+    <string name="month_november">Novembro</string>
+    <string name="month_december">Dezembro</string>
+
+        <!-- Action -->
+    <string name="delete_habit">Apagar Hábito</string>
 </resources>

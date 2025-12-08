@@ -2,13 +2,38 @@
 <resources>
     <string name="app_name">Dot: Habit Tracker</string>
 
-    <!--  Headers  -->
+    <!-- HabitListScreen -->
+        <!-- ScreenHeader -->
     <string name="habit_screen_title">Habits</string>
 
-    <!--  Texts  -->
+        <!-- Label -->
     <string name="days_label">%1$d Days</string>
 
 
-    <!--  Actions  -->
+        <!-- Action -->
     <string name="action_add_habit">Add Habit</string>
+
+    <!-- HabitDetailsScreen -->
+        <!-- Label -->
+    <string name="active_habit_for">Active Habit For</string>
+    <string name="_days">days</string>
+    <string name="progress">PROGRESS</string>
+    <string name="init_date_details">Start: %2$s %1$d, %3$d</string>
+    <string name="total_days_details">Total Days: %1$d</string>
+
+    <string name="month_january">January</string>
+    <string name="month_february">February</string>
+    <string name="month_march">March</string>
+    <string name="month_april">April</string>
+    <string name="month_may">May</string>
+    <string name="month_june">June</string>
+    <string name="month_july">July</string>
+    <string name="month_august">August</string>
+    <string name="month_september">September</string>
+    <string name="month_october">October</string>
+    <string name="month_november">November</string>
+    <string name="month_december">December</string>
+
+        <!-- Action -->
+    <string name="delete_habit">Delete Habit</string>
 </resources>

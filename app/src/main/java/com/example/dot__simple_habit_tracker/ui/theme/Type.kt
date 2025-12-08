@@ -1,20 +1,32 @@
 package com.example.dot__simple_habit_tracker.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 // Set of Material typography styles to start with
+val FontFamilyDefault = FontFamily.SansSerif
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = FontFamilyDefault,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
+        fontSize = 19.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        letterSpacing = 0.7.sp
+    ),
+
+    labelLarge = TextStyle(
+        fontFamily = FontFamilyDefault,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 19.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.7.sp
     )
+
+
     /* Other default text styles to override
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
