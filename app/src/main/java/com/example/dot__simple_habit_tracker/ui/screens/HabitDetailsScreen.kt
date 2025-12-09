@@ -53,7 +53,7 @@ fun InitHabitDetailScreen(
                     .padding(horizontal = 24.dp)
             ) {
 
-                ScreenHeader(
+                HabitDetailHeader(
                     habit = habit,
                     backArrowAction = backAction
                 )
@@ -64,19 +64,19 @@ fun InitHabitDetailScreen(
                         .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    ScreenCounter(habit = habit)
+                    HabitDetailCounter(habit = habit)
                 }
 
-                ScreenDetails(habit = habit)
+                HabitDetailProgress(habit = habit)
 
-                DeleteHabitButton(habit = habit, viewModel = viewModel, backAction = backAction)
+                HabitDetailDeleteButtom(habit = habit, viewModel = viewModel, backAction = backAction)
             }
         }
     }
 }
 
 @Composable
-fun ScreenHeader(habit: Habit, backArrowAction: () -> Unit) {
+fun HabitDetailHeader(habit: Habit, backArrowAction: () -> Unit) {
     Box(
         modifier = Modifier
             .padding(vertical = 25.dp),
@@ -118,7 +118,7 @@ fun ScreenHeader(habit: Habit, backArrowAction: () -> Unit) {
 }
 
 @Composable
-fun ScreenCounter(habit: Habit) {
+fun HabitDetailCounter(habit: Habit) {
 
     Column {
         Text(
@@ -163,7 +163,7 @@ fun ScreenCounter(habit: Habit) {
 }
 
 @Composable
-fun ScreenDetails(habit: Habit) {
+fun HabitDetailProgress(habit: Habit) {
     HorizontalDivider(
         thickness = 1.dp
     )
@@ -223,7 +223,7 @@ fun ScreenDetails(habit: Habit) {
 }
 
 @Composable
-fun DeleteHabitButton(habit: Habit, viewModel: HabitsViewModel, backAction: () -> Unit) {
+fun HabitDetailDeleteButtom(habit: Habit, viewModel: HabitsViewModel, backAction: () -> Unit) {
     Surface(
         modifier = Modifier
             .padding(vertical = 20.dp)
