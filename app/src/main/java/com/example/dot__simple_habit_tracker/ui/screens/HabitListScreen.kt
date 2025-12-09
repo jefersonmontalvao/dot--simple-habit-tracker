@@ -1,7 +1,7 @@
 package com.example.dot__simple_habit_tracker.ui.screens
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -39,108 +39,132 @@ import com.example.dot__simple_habit_tracker.ui.viewmodels.HabitsViewModel
     
 fun InitHabitListScreen(
     viewModel: HabitsViewModel,
-    onAddClick: () -> Unit,
-    onHabitClick: (String) -> Unit
+    navigateToAddHabit: () -> Unit,
+    navigateToHabitDetails: (String) -> Unit
 ) {
     val habits: List<Habit> by viewModel.habits.collectAsState(initial = emptyList())
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            Text(
-                text = stringResource(id = R.string.habit_screen_title),
-                style = MaterialTheme.typography
-                    .headlineMedium.copy(fontWeight = FontWeight.SemiBold),
-                textAlign = TextAlign.Center,
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 40.dp, bottom = 8.dp)
-            )
+                    .padding(horizontal = 24.dp)
+            ) {
+                HabitListHeader()
 
-            HorizontalDivider(
-                thickness = 1.dp,
-                modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 16.dp)
-            )
+                HorizontalDivider(thickness = 1.dp)
 
+                Box(
+                    modifier = Modifier
+                        .padding(vertical = 5.dp)
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    HabitList(habitList = habits, navigateToDetails = navigateToHabitDetails)
+                }
 
-            HabitList(modifier = Modifier.weight(1f), habitList = habits)
+                HorizontalDivider(thickness = 1.dp)
 
-            HorizontalDivider(modifier = Modifier.padding(horizontal = 24.dp))
-
-            AddHabitButton(viewModel = viewModel, onAddClick = onAddClick)
+                AddHabitButton(onAddClick = navigateToAddHabit)
+            }
         }
     }
 }
 
 @Composable
-fun HabitList(modifier: Modifier, habitList: List<Habit>) {
-    LazyColumn(
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        items(habitList) { habit: Habit ->
-            HabitItem(
-                habit = habit,
-                isLastHabitItem = habitList.lastIndexOf(habit) == habitList.size - 1)
-        }
-    }
-}
-
-@Composable
-fun HabitItem(habit: Habit, isLastHabitItem: Boolean, onHabitClick: (String) -> Unit) {
-    Row(
+fun HabitListHeader() {
+    Text(
+        text = stringResource(id = R.string.habit_screen_title),
+        style = MaterialTheme.typography
+            .headlineMedium.copy(fontWeight = FontWeight.SemiBold),
+        textAlign = TextAlign.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp, horizontal = 24.dp)
-            .clickable {
-                onHabitClick(habit.id)
-            },
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = habit.name,
-            style = MaterialTheme.typography.bodyLarge
-            )
-
-        Text(
-            text = stringResource(id = R.string.days_label, habit.daysSinceCreation()),
-            style = MaterialTheme.typography.bodyLarge.copy(
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            .padding(vertical = 25.dp),
         )
+}
 
-
-    }
-    if (!isLastHabitItem) {
-        HorizontalDivider(modifier = Modifier.padding(horizontal = 24.dp))
+@Composable
+fun HabitList(habitList: List<Habit>, navigateToDetails: (String) -> Unit) {
+    Column {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            items(habitList) { habit: Habit ->
+                HabitItem(
+                    habit = habit,
+                    isLastHabitItem = habitList.lastIndexOf(habit) == habitList.size - 1,
+                    navigateToDetails = navigateToDetails
+                )
+            }
+        }
     }
 }
 
 @Composable
-fun AddHabitButton(viewModel: HabitsViewModel, onAddClick: () -> Unit) {
+fun HabitItem(habit: Habit, isLastHabitItem: Boolean, navigateToDetails: (String) -> Unit) {
     Surface(
         modifier = Modifier
-            .padding(horizontal = 24.dp, vertical = 20.dp )
-            .height(45.dp)
+            .height(30.dp)
             .fillMaxWidth(),
-        shape = RoundedCornerShape(5.dp),
+        shape = RoundedCornerShape(7.dp),
+        onClick = {
+            navigateToDetails(habit.id)
+                  },
+    ) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = habit.name,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .padding(start = 7.dp)
+                )
+
+                Text(
+                    text = stringResource(id = R.string.days_label, habit.daysSinceCreation()),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .padding(end = 7.dp)
+                )
+            }
+    }
+
+    if (!isLastHabitItem) {
+        HorizontalDivider(thickness = 1.dp, modifier = Modifier.padding(vertical = 10.dp))
+    }
+}
+
+@Composable
+fun AddHabitButton(onAddClick: () -> Unit) {
+    Surface(
+        modifier = Modifier
+            .padding(vertical = 20.dp)
+            .height(55.dp)
+            .fillMaxWidth(),
         onClick = { onAddClick() },
+        shape = RoundedCornerShape(10.dp),
         tonalElevation = 1.dp
     ) {
-        Row(
+        Box(
             modifier = Modifier
-                .padding(start = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(start = 7.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = stringResource(id = R.string.action_add_habit)
+            Row {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(id = R.string.action_add_habit)
                 )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = stringResource(id = R.string.action_add_habit),
-                style = MaterialTheme.typography.bodyLarge
-            )
+                Spacer(modifier = Modifier.width(5.dp))
+                Text(
+                    text = stringResource(id = R.string.action_add_habit),
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
         }
     }
 }
