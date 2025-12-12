@@ -3,10 +3,9 @@ package com.example.dot__simple_habit_tracker.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dot__simple_habit_tracker.data.repository.HabitRepository
-import com.example.dot__simple_habit_tracker.domain.model.Habit
+import com.example.dot__simple_habit_tracker.domain.models.Habit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
