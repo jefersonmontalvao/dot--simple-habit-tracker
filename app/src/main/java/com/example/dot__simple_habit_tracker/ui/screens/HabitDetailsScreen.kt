@@ -1,5 +1,6 @@
 package com.example.dot__simple_habit_tracker.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,7 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dot__simple_habit_tracker.R
-import com.example.dot__simple_habit_tracker.domain.model.Habit
+import com.example.dot__simple_habit_tracker.domain.models.Habit
 import com.example.dot__simple_habit_tracker.ui.theme.Typography
 import com.example.dot__simple_habit_tracker.ui.viewmodels.HabitsViewModel
 
@@ -43,7 +44,17 @@ fun InitHabitDetailScreen(
     backAction: () -> Unit
     ) {
     val habits: List<Habit> by viewModel.habits.collectAsState(initial = emptyList())
-    val habit: Habit = habits.first { it.id == habitId }
+    val habit: Habit? = habits.find { it.id == habitId }
+
+    if (habit == null) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Carregando...")
+        }
+        return
+    }
 
     Scaffold { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
