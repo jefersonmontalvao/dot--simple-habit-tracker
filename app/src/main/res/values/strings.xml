@@ -36,4 +36,35 @@
 
         <!-- Action -->
     <string name="delete_habit">Delete Habit</string>
+
+    <!-- HabitDetailsScreen -->
+        <!-- ScreenHeader -->
+    <string name="add_habit_screen_title">Add Habit</string>
+
+        <!-- Label -->
+    <string name="motivational_phrase_1">Small steps, big changes.</string>
+    <string name="motivational_phrase_2">Success is the sum of small efforts repeated
+        daily.</string>
+    <string name="motivational_phrase_3">Your habits define your future.</string>
+    <string name="motivational_phrase_4">Change your habits to change your life.</string>
+    <string name="motivational_phrase_5">Discipline is choosing between what you want now and what
+        you want most.</string>
+    <string name="motivational_phrase_6">Consistency beats intensity.</string>
+    <string name="motivational_phrase_7">Don\'t wait for motivation; build the habit.</string>
+    <string name="motivational_phrase_8">We are what we repeatedly do.</string>
+    <string name="motivational_phrase_9">Start small, but start today.</string>
+    <string name="motivational_phrase_10">The quality of your life is the quality of your
+        habits.</string>
+
+    <string name="add_habit_placeholder">Type a new habit</string>
+    <string name="add_habit">Add Habit</string>
+    <string name="habit_suggestions_label">Habit Suggestions</string>
+    <string name="add_habit_suggestion_content_description">add habit suggestion</string>
+    <string name="added_habit_suggestion_content_description">habit suggestion already added</string>
+
+    <string name="habit_suggestion_1">Quit Smoking|Breathe Freedom.|You are choosing vitality, longevity, and pure energy.</string>
+    <string name="habit_suggestion_2">Wake up Early|Master the Dawn.|Waking up early is the key to planning, focus, and the feeling that you are in charge of your day, not the opposite.</string>
+    <string name="habit_suggestion_3">Don\'t Procrastinate|Build Confidence.|Facing difficult tasks immediately not only accelerates success but also boosts your self-esteem with every challenge overcome.</string>
+    <string name="habit_suggestion_4">Avoid Alcohol|Unlock Your Clarity.|Prioritize your mental health, sleep, and focus. Reducing or eliminating alcohol is an act of self-sufficiency that results in more stable energy and sharper decisions.</string>
+    <string name="habit_suggestion_5">Practice Physical Exercise|Keep the Engine Running.|Movement is your medicine and your energy source. Exercise not only strengthens your body but also drastically improves your mood, concentration, and mental resilience.</string>
 </resources>
