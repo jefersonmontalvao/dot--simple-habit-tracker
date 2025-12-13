@@ -1,11 +1,16 @@
 package com.example.dot__simple_habit_tracker.ui.viewmodels
 
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dot__simple_habit_tracker.data.repository.HabitRepository
 import com.example.dot__simple_habit_tracker.domain.model.Habit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,6 +20,11 @@ class HabitsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val habits: Flow<List<Habit>> = repository.getHabits()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
 
     fun addHabit(habit: Habit) {
         viewModelScope.launch {
