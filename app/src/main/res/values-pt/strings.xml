@@ -35,4 +35,37 @@
 
         <!-- Action -->
     <string name="delete_habit">Apagar Hábito</string>
+
+    <!-- HabitDetailsScreen -->
+        <!-- ScreenHeader -->
+    <string name="add_habit_screen_title">Adicionar Hábito</string>
+
+        <!-- Label -->
+    <string name="motivational_phrase_1">Pequenos passos, grandes mudanças.</string>
+    <string name="motivational_phrase_2">O sucesso é a soma de pequenos esforços repetidos
+        diariamente.</string>
+    <string name="motivational_phrase_3">Seus hábitos definem o seu futuro.</string>
+    <string name="motivational_phrase_4">Mude seus hábitos para mudar a sua vida.</string>
+    <string name="motivational_phrase_5">A disciplina é escolher entre o que você quer agora e o que
+        você mais quer.</string>
+    <string name="motivational_phrase_6">A consistência supera a intensidade.</string>
+    <string name="motivational_phrase_7">Não espere motivação; crie o hábito.</string>
+    <string name="motivational_phrase_8">Nós somos aquilo que fazemos repetidamente.</string>
+    <string name="motivational_phrase_9">Comece pequeno, mas comece hoje.</string>
+    <string name="motivational_phrase_10">A qualidade da sua vida é a qualidade dos seus
+        hábitos.</string>
+
+    <string name="add_habit_placeholder">Digite um novo hábito</string>
+    <string name="add_habit">Adicionar Hábito</string>
+    <string name="habit_suggestions_label">Sugestões de Hábito</string>
+    <string name="add_habit_suggestion_content_description">adicionar sugestão de hábito</string>
+    <string name="added_habit_suggestion_content_description">sugestão de hábito já adicionada</string>
+
+
+    <string name="habit_suggestion_1">Não Fumar|Respire Liberdade.|Você está escolhendo a vitalidade, a longevidade e a energia pura.</string>
+    <string name="habit_suggestion_2">Acordar Cedo|Domine o Amanhecer.|Acordar cedo é a chave para o planejamento, o foco e a sensação de que você está no comando do seu dia, não o contrário.</string>
+    <string name="habit_suggestion_3">Não Procastinar|Construa Confiança.|Enfrentar tarefas difíceis de imediato não só acelera o sucesso, mas também eleva sua autoestima a cada desafio superado.</string>
+    <string name="habit_suggestion_4">Não Consumir Álcool|Desbloqueie Sua Clareza.|Priorize sua saúde mental, seu sono e seu foco. Reduzir ou eliminar o álcool é um ato de autossuficiência que resulta em mais energia estável e decisões mais nítidas.</string>
+    <string name="habit_suggestion_5">Praticar Exercício Físico|Mantenha o Motor Ligado.|O movimento é a sua medicina e sua fonte de energia. O exercício não só fortalece seu corpo, mas também melhora drasticamente seu humor, sua concentração e sua resiliência mental.</string>
+
 </resources>

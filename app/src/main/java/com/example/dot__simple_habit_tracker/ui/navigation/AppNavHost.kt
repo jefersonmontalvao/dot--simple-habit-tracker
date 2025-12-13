@@ -1,6 +1,5 @@
 package com.example.dot__simple_habit_tracker.ui.navigation
 
-import androidx.compose.material3.Text
 import com.example.dot__simple_habit_tracker.ui.viewmodels.HabitsViewModel
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
@@ -10,19 +9,19 @@ import com.example.dot__simple_habit_tracker.ui.screens.InitHabitListScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.example.dot__simple_habit_tracker.ui.screens.InitAddHabitScreen
 import com.example.dot__simple_habit_tracker.ui.screens.InitHabitDetailScreen
 
 @Composable
 fun AppNavHost() {
     val navController = rememberNavController()
+    val viewModel: HabitsViewModel = hiltViewModel()
 
     NavHost(
         navController = navController,
         startDestination = Screen.HabitList.route
     ) {
         composable(Screen.HabitList.route) {
-            val viewModel: HabitsViewModel = hiltViewModel()
-
             InitHabitListScreen(
                 viewModel = viewModel,
                 navigateToAddHabit = {
@@ -40,7 +39,6 @@ fun AppNavHost() {
                 navArgument("habitId") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val viewModel: HabitsViewModel = hiltViewModel()
             val habitId: String = backStackEntry.arguments?.getString("habitId")?: ""
 
             InitHabitDetailScreen(
@@ -50,7 +48,10 @@ fun AppNavHost() {
         }
 
         composable(Screen.AddHabit.route) {
-            // TODO
+            InitAddHabitScreen(
+                viewModel = viewModel,
+                backAction = { navController.popBackStack() }
+            )
         }
     }
 }
