@@ -1,5 +1,6 @@
 package com.example.dot__simple_habit_tracker.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,7 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dot__simple_habit_tracker.R
-import com.example.dot__simple_habit_tracker.domain.model.Habit
+import com.example.dot__simple_habit_tracker.domain.models.Habit
 import com.example.dot__simple_habit_tracker.ui.theme.Typography
 import com.example.dot__simple_habit_tracker.ui.viewmodels.HabitsViewModel
 
@@ -43,7 +44,17 @@ fun InitHabitDetailScreen(
     backAction: () -> Unit
     ) {
     val habits: List<Habit> by viewModel.habits.collectAsState(initial = emptyList())
-    val habit: Habit = habits.first { it.id == habitId }
+    val habit: Habit? = habits.find { it.id == habitId }
+
+    if (habit == null) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Carregando...")
+        }
+        return
+    }
 
     Scaffold { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
@@ -53,7 +64,7 @@ fun InitHabitDetailScreen(
                     .padding(horizontal = 24.dp)
             ) {
 
-                ScreenHeader(
+                HabitDetailHeader(
                     habit = habit,
                     backArrowAction = backAction
                 )
@@ -64,19 +75,19 @@ fun InitHabitDetailScreen(
                         .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    ScreenCounter(habit = habit)
+                    HabitDetailCounter(habit = habit)
                 }
 
-                ScreenDetails(habit = habit)
+                HabitDetailProgress(habit = habit)
 
-                DeleteHabitButton(habit = habit, viewModel = viewModel, backAction = backAction)
+                HabitDetailDeleteButtom(habit = habit, viewModel = viewModel, backAction = backAction)
             }
         }
     }
 }
 
 @Composable
-fun ScreenHeader(habit: Habit, backArrowAction: () -> Unit) {
+fun HabitDetailHeader(habit: Habit, backArrowAction: () -> Unit) {
     Box(
         modifier = Modifier
             .padding(vertical = 25.dp),
@@ -118,7 +129,7 @@ fun ScreenHeader(habit: Habit, backArrowAction: () -> Unit) {
 }
 
 @Composable
-fun ScreenCounter(habit: Habit) {
+fun HabitDetailCounter(habit: Habit) {
 
     Column {
         Text(
@@ -163,7 +174,7 @@ fun ScreenCounter(habit: Habit) {
 }
 
 @Composable
-fun ScreenDetails(habit: Habit) {
+fun HabitDetailProgress(habit: Habit) {
     HorizontalDivider(
         thickness = 1.dp
     )
@@ -223,7 +234,7 @@ fun ScreenDetails(habit: Habit) {
 }
 
 @Composable
-fun DeleteHabitButton(habit: Habit, viewModel: HabitsViewModel, backAction: () -> Unit) {
+fun HabitDetailDeleteButtom(habit: Habit, viewModel: HabitsViewModel, backAction: () -> Unit) {
     Surface(
         modifier = Modifier
             .padding(vertical = 20.dp)
