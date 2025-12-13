@@ -123,7 +123,7 @@ private fun AddHabitScreenHeader(backArrowAction: () -> Unit) {
 }
 
 @Composable
-private fun getRandomMotivationalPhrase(): String {
+fun getRandomMotivationalPhrase(): String {
     val motivationalPhrases = listOf(
         stringResource(id = R.string.motivational_phrase_1),
         stringResource(id = R.string.motivational_phrase_2),

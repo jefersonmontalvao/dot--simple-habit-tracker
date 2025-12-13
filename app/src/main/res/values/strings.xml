@@ -7,6 +7,9 @@
     <string name="habit_screen_title">Habits</string>
 
         <!-- Label -->
+    <string name="habits_quantity_nonplural_label">You have %1$d active habit!</string>
+    <string name="habits_quantity_plural_label">You have %1$d active habits!</string>
+    <string name="empty_habits_quantity_label">You do not have any active habits.</string>
     <string name="days_label">%1$d Days</string>
 
 

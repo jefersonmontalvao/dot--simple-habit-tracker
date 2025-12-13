@@ -7,6 +7,9 @@
     <string name="habit_screen_title">Hábitos</string>
 
         <!-- Label -->
+    <string name="habits_quantity_nonplural_label">Você possui %1$d hábito ativo!</string>
+    <string name="habits_quantity_plural_label">Você possui %1$d hábitos ativos!</string>
+    <string name="empty_habits_quantity_label">Você não possui hábitos ativos.</string>
     <string name="days_label">%1$d Dias</string>
 
         <!-- Action -->
