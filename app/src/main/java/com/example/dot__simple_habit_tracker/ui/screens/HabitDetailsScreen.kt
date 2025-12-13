@@ -1,6 +1,5 @@
 package com.example.dot__simple_habit_tracker.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,12 +46,6 @@ fun InitHabitDetailScreen(
     val habit: Habit? = habits.find { it.id == habitId }
 
     if (habit == null) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Carregando...")
-        }
         return
     }
 
