@@ -26,12 +26,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.dot__simple_habit_tracker.R
-import com.example.dot__simple_habit_tracker.domain.model.Habit
+import com.example.dot__simple_habit_tracker.domain.models.Habit
 import com.example.dot__simple_habit_tracker.ui.viewmodels.HabitsViewModel
 
 
@@ -113,20 +114,30 @@ fun HabitItem(habit: Habit, isLastHabitItem: Boolean, navigateToDetails: (String
             navigateToDetails(habit.id)
                   },
     ) {
+        val textColor: Color = when {
+            habit.daysSinceCreation().toInt() == 0 -> Color.Red
+            habit.daysSinceCreation().toInt() in 1..7 -> MaterialTheme.colorScheme.onSurface
+            habit.daysSinceCreation().toInt() in 8..<21 -> MaterialTheme.colorScheme.secondary
+            else -> Color(0xFF4CAF50)
+        }
+
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = habit.name,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier
                         .padding(start = 7.dp)
                 )
 
                 Text(
                     text = stringResource(id = R.string.days_label, habit.daysSinceCreation()),
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = textColor
+                    ),
                     modifier = Modifier
                         .padding(end = 7.dp)
                 )
@@ -147,7 +158,8 @@ fun AddHabitButton(onAddClick: () -> Unit) {
             .fillMaxWidth(),
         onClick = { onAddClick() },
         shape = RoundedCornerShape(10.dp),
-        tonalElevation = 1.dp
+        tonalElevation = 1.dp,
+        color = Color(0xFF4CAF50)
     ) {
         Box(
             modifier = Modifier
@@ -157,12 +169,13 @@ fun AddHabitButton(onAddClick: () -> Unit) {
             Row {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(id = R.string.action_add_habit)
+                    contentDescription = stringResource(id = R.string.action_add_habit),
+                    tint = Color.White
                 )
                 Spacer(modifier = Modifier.width(5.dp))
                 Text(
                     text = stringResource(id = R.string.action_add_habit),
-                    style = MaterialTheme.typography.labelLarge
+                    style = MaterialTheme.typography.labelLarge.copy(color = Color.White)
                 )
             }
         }
