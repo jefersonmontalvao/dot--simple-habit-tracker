@@ -29,6 +29,9 @@
     <string name="total_days_details">Total de Dias: %1$d</string>
     <string name="max_streak_details">Streak Máximo: %1$d</string>
     <string name="last_failure_date_details">Última Falha: %1$d de %2$s de %3$d</string>
+    <string name="delete_habit_card_impact_title">Tem certeza?</string>
+    <string name="delete_habit_card_warning">Todo progresso vai sumir. Quer mesmo apagar?</string>
+
 
     <string name="month_january">Janeiro</string>
     <string name="month_february">Fevereiro</string>
@@ -45,6 +48,8 @@
 
         <!-- Action -->
     <string name="delete_habit">Apagar Hábito</string>
+    <string name="action_delete_habit_card_delete">Zerar</string>
+    <string name="action_delete_habit_card_cancel">Cancelar</string>
 
     <!-- HabitDetailsScreen -->
         <!-- ScreenHeader -->

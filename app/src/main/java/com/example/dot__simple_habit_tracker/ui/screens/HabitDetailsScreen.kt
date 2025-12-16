@@ -1,5 +1,8 @@
 package com.example.dot__simple_habit_tracker.ui.screens
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +28,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.example.dot__simple_habit_tracker.R
 import com.example.dot__simple_habit_tracker.domain.models.Habit
 import com.example.dot__simple_habit_tracker.ui.theme.Typography
@@ -42,6 +54,7 @@ fun InitHabitDetailScreen(
     habitId: String,
     backAction: () -> Unit
     ) {
+    var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
     val habits: List<Habit> by viewModel.habits.collectAsState(initial = emptyList())
     val habit: Habit? = habits.find { it.id == habitId }
 
@@ -73,7 +86,19 @@ fun InitHabitDetailScreen(
 
                 HabitDetailProgress(habit = habit)
 
-                HabitDetailDeleteButton(habit = habit, viewModel = viewModel, backAction = backAction)
+                HabitDetailDeleteButton(
+                    onButtonClick = { showDeleteConfirmationDialog = true }
+                )
+            }
+            if (showDeleteConfirmationDialog) {
+                ConfirmDeleteHabit(
+                    onDismiss = { showDeleteConfirmationDialog = false },
+                    onConfirm = {
+                        backAction()
+                        showDeleteConfirmationDialog = false
+                        viewModel.delHabit(habit)
+                    }
+                )
             }
         }
     }
@@ -229,17 +254,16 @@ private fun HabitDetailProgress(habit: Habit) {
 }
 
 @Composable
-private fun HabitDetailDeleteButton(habit: Habit, viewModel: HabitsViewModel, backAction: () -> Unit) {
+private fun HabitDetailDeleteButton(
+    onButtonClick: () -> Unit
+) {
     Surface(
         modifier = Modifier
             .padding(vertical = 20.dp)
             .height(55.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(10.dp),
-        onClick = {
-            backAction()
-            viewModel.delHabit(habit = habit)
-        },
+        onClick = onButtonClick,
         tonalElevation = 1.dp
     ) {
         Box(
@@ -277,4 +301,82 @@ private fun findMonthTranslation(month: Int): String {
     }
 
     return stringResource(id = monthNameResourceId)
+}
+
+@Composable
+private fun ConfirmDeleteHabit(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Card(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {},
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(20.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.delete_habit_card_impact_title),
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Serif,
+                        textAlign = TextAlign.Center
+                    )
+                )
+
+                Spacer(Modifier.height(6.dp))
+
+                Text(
+                    text = stringResource(R.string.delete_habit_card_warning),
+                    style = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center)
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Button(
+                        onClick = onDismiss,
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.action_delete_habit_card_cancel),
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
+
+                    Button(
+                        onClick = onConfirm,
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error
+                        ),
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.action_delete_habit_card_delete),
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
