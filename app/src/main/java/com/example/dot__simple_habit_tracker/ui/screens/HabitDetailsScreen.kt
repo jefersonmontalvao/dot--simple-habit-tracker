@@ -73,14 +73,14 @@ fun InitHabitDetailScreen(
 
                 HabitDetailProgress(habit = habit)
 
-                HabitDetailDeleteButtom(habit = habit, viewModel = viewModel, backAction = backAction)
+                HabitDetailDeleteButton(habit = habit, viewModel = viewModel, backAction = backAction)
             }
         }
     }
 }
 
 @Composable
-fun HabitDetailHeader(habit: Habit, backArrowAction: () -> Unit) {
+private fun HabitDetailHeader(habit: Habit, backArrowAction: () -> Unit) {
     Box(
         modifier = Modifier
             .padding(vertical = 25.dp),
@@ -122,7 +122,7 @@ fun HabitDetailHeader(habit: Habit, backArrowAction: () -> Unit) {
 }
 
 @Composable
-fun HabitDetailCounter(habit: Habit) {
+private fun HabitDetailCounter(habit: Habit) {
 
     Column {
         Text(
@@ -167,7 +167,7 @@ fun HabitDetailCounter(habit: Habit) {
 }
 
 @Composable
-fun HabitDetailProgress(habit: Habit) {
+private fun HabitDetailProgress(habit: Habit) {
     HorizontalDivider(
         thickness = 1.dp
     )
@@ -178,44 +178,46 @@ fun HabitDetailProgress(habit: Habit) {
     ) {
         Text(
             stringResource(R.string.progress),
-            style = Typography.bodyLarge.copy(color = Color(0xFF9E9E9E)),
+            style = Typography.bodyLarge.copy(
+                color = Color(0xFF9E9E9E),
+                fontWeight = FontWeight.SemiBold
+            ),
             modifier = Modifier
-                .padding(bottom = 15.dp)
+                .padding(bottom = 10.dp)
         )
         Text(
             text = stringResource(
                 id = R.string.init_date_details,
                 habit.creationDate.dayOfMonth,
                 habit.creationDate.monthValue.let { month ->
-                    val stringResId = when (month) {
-                        1 -> R.string.month_january
-                        2 -> R.string.month_february
-                        3 -> R.string.month_march
-                        4 -> R.string.month_april
-                        5 -> R.string.month_may
-                        6 -> R.string.month_june
-                        7 -> R.string.month_july
-                        8 -> R.string.month_august
-                        9 -> R.string.month_september
-                        10 -> R.string.month_october
-                        11 -> R.string.month_november
-                        12 -> R.string.month_december
-                        else -> 0
-                    }
-
-                    stringResource(stringResId)
+                    findMonthTranslation(month = month)
                 },
                 habit.creationDate.year
                 ),
-            style = Typography.bodyLarge.copy(color = Color(0xFF9E9E9E)),
-            modifier = Modifier
-                .padding(bottom = 10.dp)
+            style = Typography.bodyLarge.copy(color = Color(0xFF9E9E9E))
         )
 
         Text(
             text = stringResource(
                 id = R.string.total_days_details,
                 habit.daysSinceCreation()
+            ),
+            style = Typography.bodyLarge.copy(color = Color(0xFF9E9E9E))
+        )
+
+        Text(
+            text = stringResource(id = R.string.max_streak_details, habit.maxStreak()),
+            style = Typography.bodyLarge.copy(color = Color(0xFF9E9E9E))
+        )
+
+        Text(
+            text = stringResource(
+                id = R.string.last_failure_date_details,
+                habit.lastBreakStreakDate.dayOfMonth,
+                habit.lastBreakStreakDate.monthValue.let { month ->
+                    findMonthTranslation(month = month)
+                },
+                habit.lastBreakStreakDate.year
             ),
             style = Typography.bodyLarge.copy(color = Color(0xFF9E9E9E))
         )
@@ -227,7 +229,7 @@ fun HabitDetailProgress(habit: Habit) {
 }
 
 @Composable
-fun HabitDetailDeleteButtom(habit: Habit, viewModel: HabitsViewModel, backAction: () -> Unit) {
+private fun HabitDetailDeleteButton(habit: Habit, viewModel: HabitsViewModel, backAction: () -> Unit) {
     Surface(
         modifier = Modifier
             .padding(vertical = 20.dp)
@@ -254,4 +256,25 @@ fun HabitDetailDeleteButtom(habit: Habit, viewModel: HabitsViewModel, backAction
             )
         }
     }
+}
+
+@Composable
+private fun findMonthTranslation(month: Int): String {
+    val monthNameResourceId = when (month) {
+        1 -> R.string.month_january
+        2 -> R.string.month_february
+        3 -> R.string.month_march
+        4 -> R.string.month_april
+        5 -> R.string.month_may
+        6 -> R.string.month_june
+        7 -> R.string.month_july
+        8 -> R.string.month_august
+        9 -> R.string.month_september
+        10 -> R.string.month_october
+        11 -> R.string.month_november
+        12 -> R.string.month_december
+        else -> 0
+    }
+
+    return stringResource(id = monthNameResourceId)
 }

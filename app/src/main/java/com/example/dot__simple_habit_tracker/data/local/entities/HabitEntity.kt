@@ -8,5 +8,7 @@ import java.time.LocalDateTime
 data class HabitEntity(
     @PrimaryKey val id: String,
     val name: String,
-    val creationDate: LocalDateTime
+    val creationDate: LocalDateTime,
+    var lastBreakStreakDate: LocalDateTime,
+    var maxStreak: Long
 )

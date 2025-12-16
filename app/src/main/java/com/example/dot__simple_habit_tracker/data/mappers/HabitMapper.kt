@@ -7,12 +7,16 @@ fun HabitEntity.toDomain(): Habit =
     Habit(
         id = id,
         name = name,
-        creationDate = creationDate
+        creationDate = creationDate,
+        lastBreakStreakDate = lastBreakStreakDate,
+        _maxStreak = maxStreak
     )
 
 fun Habit.toEntity(): HabitEntity =
     HabitEntity(
         id = id,
         name = name,
-        creationDate = creationDate
+        creationDate = creationDate,
+        lastBreakStreakDate = lastBreakStreakDate,
+        maxStreak = maxStreak()
     )

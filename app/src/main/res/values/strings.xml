@@ -11,10 +11,15 @@
     <string name="habits_quantity_plural_label">You have %1$d active habits!</string>
     <string name="empty_habits_quantity_label">You do not have any active habits.</string>
     <string name="days_label">%1$d Days</string>
+    <string name="tip_break_streak_text">Slip up today? Long-press the habit.</string>
+    <string name="confirm_break_streak_card_impact_title">It’s okay to stumble.</string>
+    <string name="confirm_break_streak_card_comfort">What matters is not falling.\nDo you want to record a slip for %1$s today?</string>
 
 
         <!-- Action -->
-    <string name="action_add_habit">Add Habit</string>
+    <string name="action_add_habit">New Habit</string>
+    <string name="action_confirm_break_streak_card_fail">Fail</string>
+    <string name="action_confirm_break_streak_card_cancel">Cancel</string>
 
     <!-- HabitDetailsScreen -->
         <!-- Label -->
@@ -23,6 +28,8 @@
     <string name="progress">PROGRESS</string>
     <string name="init_date_details">Start: %2$s %1$d, %3$d</string>
     <string name="total_days_details">Total Days: %1$d</string>
+    <string name="max_streak_details">Max Streak: %1$d</string>
+    <string name="last_failure_date_details">Last Failure: %2$s %1$d, %3$d</string>
 
     <string name="month_january">January</string>
     <string name="month_february">February</string>

@@ -27,5 +27,9 @@ class HabitRepository @Inject constructor(
         dao.delete(habit.toEntity())
     }
 
+    suspend fun updateHabit(habit: Habit) {
+        dao.update(habit.toEntity())
+    }
+
     suspend fun getHabitById(id: String): Habit? = dao.getById(id)?.toDomain()
 }

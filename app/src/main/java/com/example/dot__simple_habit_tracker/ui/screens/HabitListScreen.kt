@@ -1,5 +1,8 @@
 package com.example.dot__simple_habit_tracker.ui.screens
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,13 +12,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -25,18 +31,29 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.example.dot__simple_habit_tracker.R
 import com.example.dot__simple_habit_tracker.domain.models.Habit
 import com.example.dot__simple_habit_tracker.ui.viewmodels.HabitsViewModel
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.withTimeout
 
 
 @Composable
@@ -46,6 +63,7 @@ fun InitHabitListScreen(
     navigateToAddHabit: () -> Unit,
     navigateToHabitDetails: (String) -> Unit
 ) {
+    var habitToBreakStreak by remember { mutableStateOf<Habit?>(null) }
     val habits: List<Habit> by viewModel.habits.collectAsState(initial = emptyList())
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -70,7 +88,9 @@ fun InitHabitListScreen(
                 ) {
                     HabitList(
                         habitList = habits,
-                        navigateToDetails = navigateToHabitDetails
+                        navigateToDetails = navigateToHabitDetails,
+                        onHabitLongPress = { habitToBreakStreak = it }
+
                     )
                 }
 
@@ -78,6 +98,20 @@ fun InitHabitListScreen(
 
                 AddHabitButton(onAddClick = navigateToAddHabit)
             }
+        }
+    }
+
+    if (habitToBreakStreak != null) {
+        habitToBreakStreak?.let { habit: Habit ->
+                ConfirmBreakStreakCard(
+                    habit = habit,
+                    onConfirm = {
+                        val updatedHabit = habit.updateStreak()
+                        viewModel.updateHabit(updatedHabit)
+                        habitToBreakStreak = null
+                                },
+                    onDismiss = { habitToBreakStreak = null }
+                )
         }
     }
 }
@@ -118,7 +152,11 @@ private fun HabitListScreenMotivationalCard() {
 }
 
 @Composable
-private fun HabitList(habitList: List<Habit>, navigateToDetails: (String) -> Unit) {
+private fun HabitList(
+    habitList: List<Habit>,
+    navigateToDetails: (String) -> Unit,
+    onHabitLongPress: (Habit) -> Unit
+) {
     Column {
         Text(
             text = when {
@@ -134,9 +172,13 @@ private fun HabitList(habitList: List<Habit>, navigateToDetails: (String) -> Uni
                     R.string.empty_habits_quantity_label
                 )
             },
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontWeight = FontWeight.SemiBold,
+                textAlign = if (habitList.isEmpty()) TextAlign.Center else TextAlign.Start
+            ),
             modifier = Modifier
                 .padding(vertical = 10.dp)
+                .fillMaxWidth()
         )
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
@@ -145,23 +187,39 @@ private fun HabitList(habitList: List<Habit>, navigateToDetails: (String) -> Uni
                 HabitItem(
                     habit = habit,
                     isLastHabitItem = habitList.lastIndex == index,
-                    navigateToDetails = navigateToDetails
+                    navigateToDetails = navigateToDetails,
+                    onLongPress = onHabitLongPress
                 )
             }
         }
+        if (habitList.isNotEmpty()) {
+            val areAllHabitsNew = habitList.all { habit ->
+                habit.daysSinceCreation() == 0.toLong()
+            }
+
+            if (areAllHabitsNew)
+                BreakStreakTip()
+        }
+
     }
 }
 
 @Composable
-private fun HabitItem(habit: Habit, isLastHabitItem: Boolean, navigateToDetails: (String) -> Unit) {
+private fun HabitItem(
+    habit: Habit,
+    isLastHabitItem: Boolean,
+    navigateToDetails: (String) -> Unit,
+    onLongPress: (Habit) -> Unit
+) {
     Surface(
         modifier = Modifier
             .height(30.dp)
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(7.dp),
-        onClick = {
-            navigateToDetails(habit.id)
-                  },
+            .fillMaxWidth()
+            .customLongClickable(
+                onClick = { navigateToDetails(habit.id) },
+                onLongClick = { onLongPress(habit) }
+            ),
+        shape = RoundedCornerShape(10.dp)
     ) {
         val textColor: Color = when {
             habit.daysSinceCreation().toInt() == 0 -> Color.Red
@@ -170,27 +228,27 @@ private fun HabitItem(habit: Habit, isLastHabitItem: Boolean, navigateToDetails:
             else -> Color(0xFF4CAF50)
         }
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = habit.name,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier
-                        .padding(start = 7.dp)
-                )
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = habit.name,
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                modifier = Modifier
+                    .padding(start = 7.dp)
+            )
 
-                Text(
-                    text = stringResource(id = R.string.days_label, habit.daysSinceCreation()),
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = textColor
-                    ),
-                    modifier = Modifier
-                        .padding(end = 7.dp)
-                )
-            }
+            Text(
+                text = stringResource(id = R.string.days_label, habit.daysSinceCreation()),
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = textColor
+                ),
+                modifier = Modifier
+                    .padding(end = 7.dp)
+            )
+        }
     }
 
     if (!isLastHabitItem) {
@@ -229,4 +287,152 @@ private fun AddHabitButton(onAddClick: () -> Unit) {
             }
         }
     }
+}
+
+@Composable
+private fun ConfirmBreakStreakCard(
+    habit: Habit,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Card(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {},
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(20.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.confirm_break_streak_card_impact_title),
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Serif,
+                        textAlign = TextAlign.Center
+                    )
+                )
+
+                Spacer(Modifier.height(6.dp))
+
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                            append(
+                                stringResource(
+                                    R.string.confirm_break_streak_card_comfort
+                                ).split("\n")[0]
+                            )
+                        }
+
+                        append("\n")
+
+                        append(
+                            stringResource(
+                                R.string.confirm_break_streak_card_comfort
+                            ).split("%1\$s")[0].split("\n")[1]
+                        )
+
+                        withStyle(
+                            style = SpanStyle(
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        ) {
+                            append(habit.name.lowercase())
+                        }
+
+                        append(
+                            stringResource(
+                                R.string.confirm_break_streak_card_comfort
+                            ).split("%1\$s")[1]
+                        )
+                    },
+                    style = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center)
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Button(
+                        onClick = onDismiss,
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.action_confirm_break_streak_card_cancel),
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
+
+                    Button(
+                        onClick = onConfirm,
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error
+                        ),
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.action_confirm_break_streak_card_fail),
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BreakStreakTip() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.End
+    ) {
+        Text(
+            text = stringResource(R.string.tip_break_streak_text),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+        )
+    }
+}
+
+fun Modifier.customLongClickable(
+    longPressTimeMillis: Long = 200L,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit
+): Modifier = pointerInput(Unit) {
+    detectTapGestures(
+        onPress = {
+            val longPressed = try {
+                withTimeout(longPressTimeMillis) {
+                    awaitRelease()
+                }
+                false
+            } catch (e: TimeoutCancellationException) {
+                onLongClick()
+                true
+            }
+
+            if (!longPressed) {
+                onClick()
+            }
+        }
+    )
 }
