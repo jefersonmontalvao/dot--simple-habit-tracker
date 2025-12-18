@@ -30,6 +30,7 @@
     <string name="total_days_details">Total Days: %1$d</string>
     <string name="max_streak_details">Max Streak: %1$d</string>
     <string name="last_failure_date_details">Last Failure: %2$s %1$d, %3$d</string>
+    <string name="last_failure_date_details_when_na">Last Failure: Never</string>
     <string name="delete_habit_card_impact_title">You sure about this?</string>
     <string name="delete_habit_card_warning">All the progress you made will be gone. You really wanna delete it?</string>
 
