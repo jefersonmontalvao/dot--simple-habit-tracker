@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -72,7 +73,8 @@ fun InitHabitDetailScreen(
 
                 HabitDetailHeader(
                     habit = habit,
-                    backArrowAction = backAction
+                    backArrowAction = backAction,
+                    onDelPress = { showDeleteConfirmationDialog = true }
                 )
 
                 Box(
@@ -85,10 +87,6 @@ fun InitHabitDetailScreen(
                 }
 
                 HabitDetailProgress(habit = habit)
-
-                HabitDetailDeleteButton(
-                    onButtonClick = { showDeleteConfirmationDialog = true }
-                )
             }
             if (showDeleteConfirmationDialog) {
                 ConfirmDeleteHabit(
@@ -105,7 +103,11 @@ fun InitHabitDetailScreen(
 }
 
 @Composable
-private fun HabitDetailHeader(habit: Habit, backArrowAction: () -> Unit) {
+private fun HabitDetailHeader(
+    habit: Habit,
+    backArrowAction: () -> Unit,
+    onDelPress: () -> Unit
+) {
     Box(
         modifier = Modifier
             .padding(vertical = 25.dp),
@@ -123,6 +125,7 @@ private fun HabitDetailHeader(habit: Habit, backArrowAction: () -> Unit) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "back",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
                         .size(35.dp)
                 )
@@ -136,9 +139,19 @@ private fun HabitDetailHeader(habit: Habit, backArrowAction: () -> Unit) {
                 modifier = Modifier.weight(1f)
             )
 
-            Spacer(modifier = Modifier.size(35.dp))
+            Surface(
+                shape = RoundedCornerShape(5.dp),
+                onClick = onDelPress
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Delete,
+                    contentDescription = "delete habit",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier
+                        .size(35.dp)
+                )
+            }
         }
-
     }
 
     HorizontalDivider(
@@ -248,38 +261,7 @@ private fun HabitDetailProgress(habit: Habit) {
         )
     }
 
-    HorizontalDivider(
-        thickness = 1.dp
-    )
-}
 
-@Composable
-private fun HabitDetailDeleteButton(
-    onButtonClick: () -> Unit
-) {
-    Surface(
-        modifier = Modifier
-            .padding(vertical = 20.dp)
-            .height(55.dp)
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
-        onClick = onButtonClick,
-        tonalElevation = 1.dp
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = stringResource(R.string.delete_habit),
-                color = MaterialTheme.colorScheme.error,
-                style = Typography.labelLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-        }
-    }
 }
 
 @Composable
