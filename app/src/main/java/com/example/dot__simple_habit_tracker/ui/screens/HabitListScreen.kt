@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -213,7 +214,6 @@ private fun HabitItem(
 ) {
     Surface(
         modifier = Modifier
-            .height(30.dp)
             .fillMaxWidth()
             .customLongClickable(
                 onClick = { navigateToDetails(habit.id) },
@@ -237,7 +237,10 @@ private fun HabitItem(
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                 modifier = Modifier
                     .padding(start = 7.dp)
+                    .weight(1f)
             )
+
+            Spacer(Modifier.size(10.dp))
 
             Text(
                 text = stringResource(id = R.string.days_label, habit.daysSinceCreation()),
