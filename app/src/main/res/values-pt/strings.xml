@@ -53,7 +53,7 @@
     <string name="action_delete_habit_card_delete">Zerar</string>
     <string name="action_delete_habit_card_cancel">Cancelar</string>
 
-    <!-- HabitDetailsScreen -->
+    <!-- AddHabitScreen -->
         <!-- ScreenHeader -->
     <string name="add_habit_screen_title">Adicionar Hábito</string>
 
@@ -77,6 +77,7 @@
     <string name="habit_suggestions_label">Sugestões de Hábito</string>
     <string name="add_habit_suggestion_content_description">adicionar sugestão de hábito</string>
     <string name="added_habit_suggestion_content_description">sugestão de hábito já adicionada</string>
+    <string name="habit_added_snack_bar">%1$s adicionado</string>
 
 
     <string name="habit_suggestion_1">Não Fumar|Respire Liberdade.|Você está escolhendo a vitalidade, a longevidade e a energia pura.</string>
