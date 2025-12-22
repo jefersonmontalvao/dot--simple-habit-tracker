@@ -22,6 +22,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -31,10 +33,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -49,10 +53,17 @@ import com.example.dot__simple_habit_tracker.R
 import com.example.dot__simple_habit_tracker.domain.models.Habit
 import com.example.dot__simple_habit_tracker.ui.models.HabitSuggestion
 import com.example.dot__simple_habit_tracker.ui.viewmodels.HabitsViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun InitAddHabitScreen(viewModel: HabitsViewModel, backAction: () -> Unit) {
-    Scaffold { innerPadding ->
+    val snackBarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) }
+    ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                 AddHabitScreenHeader(backArrowAction = backAction)
@@ -71,12 +82,34 @@ fun InitAddHabitScreen(viewModel: HabitsViewModel, backAction: () -> Unit) {
 
                         Spacer(Modifier.height(25.dp))
 
-                        HabitInputForm(viewModel = viewModel)
+                        HabitInputForm(
+                            viewModel = viewModel,
+                            onHabitAdded = { habitText ->
+                                scope.launch {
+                                    snackBarHostState.showSnackbar(
+                                        message = context.getString(
+                                            R.string.habit_added_snack_bar,
+                                            habitText
+                                        )
+                                    )
+                                }
+                            }
+                        )
 
                         Spacer(Modifier.height(25.dp))
 
                         SuggestedHabitsSection(
-                            viewModel = viewModel
+                            viewModel = viewModel,
+                            onHabitAdded = { newHabitName ->
+                                scope.launch {
+                                    snackBarHostState.showSnackbar(
+                                        message = context.getString(
+                                            R.string.habit_added_snack_bar,
+                                            newHabitName
+                                        )
+                                    )
+                                }
+                            }
                         )
                     }
                 }
@@ -163,7 +196,7 @@ private fun AddHabitScreenMotivationalCard() {
 }
 
 @Composable
-private fun HabitInputForm(viewModel: HabitsViewModel) {
+private fun HabitInputForm(viewModel: HabitsViewModel, onHabitAdded: (String) -> Unit) {
     var habitFieldValue: String by remember { mutableStateOf("") }
 
     Column {
@@ -193,8 +226,11 @@ private fun HabitInputForm(viewModel: HabitsViewModel) {
         Button(
             onClick = {
                 if (habitFieldValue.isNotBlank()) {
-                    viewModel.addHabit(Habit(name = habitFieldValue))
+                    val newHabit = Habit(name = habitFieldValue.trim())
+                    viewModel.addHabit(newHabit)
                     habitFieldValue = ""
+
+                    onHabitAdded(newHabit.name)
                 }
             },
             shape = RoundedCornerShape(10.dp),
@@ -238,7 +274,8 @@ private fun getSuggestedHabits(): List<HabitSuggestion> {
 
 @Composable
 private fun SuggestedHabitsSection(
-    viewModel: HabitsViewModel
+    viewModel: HabitsViewModel,
+    onHabitAdded: (String) -> Unit
 ) {
     val suggestedHabits: List<HabitSuggestion> = getSuggestedHabits()
 
@@ -264,7 +301,8 @@ private fun SuggestedHabitsSection(
                     SuggestedHabitItem(
                         habitSuggestion = habitSuggestion,
                         isLastSuggestion = index == suggestedHabits.lastIndex,
-                        viewModel = viewModel
+                        viewModel = viewModel,
+                        onSuggestionAccepted = onHabitAdded
                     )
                 }
             }
@@ -276,7 +314,8 @@ private fun SuggestedHabitsSection(
 private fun SuggestedHabitItem(
     habitSuggestion: HabitSuggestion,
     isLastSuggestion: Boolean,
-    viewModel: HabitsViewModel
+    viewModel: HabitsViewModel,
+    onSuggestionAccepted: (String) -> Unit
 ) {
     val habitList: List<Habit> by viewModel.habits.collectAsState(emptyList())
     val isSuggestionAdded: Boolean = habitList.any { it.name == habitSuggestion.habit.name }
@@ -320,7 +359,10 @@ private fun SuggestedHabitItem(
             color = Color(0xFF4CAF50),
             onClick = {
                 if (!isSuggestionAdded) {
-                    viewModel.addHabit(habitSuggestion.habit)
+                    val newHabit = habitSuggestion.habit.copy()
+                    viewModel.addHabit(newHabit)
+
+                    onSuggestionAccepted(newHabit.name)
                 }
             }
         ) {
