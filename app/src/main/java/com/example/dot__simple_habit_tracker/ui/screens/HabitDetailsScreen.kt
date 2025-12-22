@@ -249,14 +249,16 @@ private fun HabitDetailProgress(habit: Habit) {
         )
 
         Text(
-            text = stringResource(
-                id = R.string.last_failure_date_details,
-                habit.lastBreakStreakDate.dayOfMonth,
-                habit.lastBreakStreakDate.monthValue.let { month ->
-                    findMonthTranslation(month = month)
-                },
-                habit.lastBreakStreakDate.year
-            ),
+            text = if (habit.lastBreakStreakDate() != null)
+                habit.lastBreakStreakDate()!!.let { dateTime ->
+                    stringResource(
+                        id = R.string.last_failure_date_details,
+                        dateTime.dayOfMonth,
+                        findMonthTranslation(dateTime.monthValue),
+                        dateTime.year
+                    )
+                }
+            else stringResource(id = R.string.last_failure_date_details_when_na),
             style = Typography.bodyLarge.copy(color = Color(0xFF9E9E9E))
         )
     }
