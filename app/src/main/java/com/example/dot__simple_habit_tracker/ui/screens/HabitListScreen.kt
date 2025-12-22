@@ -1,16 +1,17 @@
 package com.example.dot__simple_habit_tracker.ui.screens
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,12 +20,14 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -34,11 +37,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -53,8 +56,9 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.dot__simple_habit_tracker.R
 import com.example.dot__simple_habit_tracker.domain.models.Habit
 import com.example.dot__simple_habit_tracker.ui.viewmodels.HabitsViewModel
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 
 @Composable
@@ -90,7 +94,7 @@ fun InitHabitListScreen(
                     HabitList(
                         habitList = habits,
                         navigateToDetails = navigateToHabitDetails,
-                        onHabitLongPress = { habitToBreakStreak = it }
+                        onFailureClick = { habitToBreakStreak = it }
 
                     )
                 }
@@ -156,7 +160,7 @@ private fun HabitListScreenMotivationalCard() {
 private fun HabitList(
     habitList: List<Habit>,
     navigateToDetails: (String) -> Unit,
-    onHabitLongPress: (Habit) -> Unit
+    onFailureClick: (Habit) -> Unit
 ) {
     Column {
         Text(
@@ -189,7 +193,7 @@ private fun HabitList(
                     habit = habit,
                     isLastHabitItem = habitList.lastIndex == index,
                     navigateToDetails = navigateToDetails,
-                    onLongPress = onHabitLongPress
+                    onFailureClick = onFailureClick
                 )
             }
         }
@@ -210,15 +214,15 @@ private fun HabitItem(
     habit: Habit,
     isLastHabitItem: Boolean,
     navigateToDetails: (String) -> Unit,
-    onLongPress: (Habit) -> Unit
+    onFailureClick: (Habit) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
+    var showFailureMarkedAdvice by remember { mutableStateOf(false) }
+
     Surface(
         modifier = Modifier
-            .fillMaxWidth()
-            .customLongClickable(
-                onClick = { navigateToDetails(habit.id) },
-                onLongClick = { onLongPress(habit) }
-            ),
+            .fillMaxWidth(),
+        onClick = { navigateToDetails(habit.id) },
         shape = RoundedCornerShape(10.dp)
     ) {
         val textColor: Color = when {
@@ -229,7 +233,6 @@ private fun HabitItem(
         }
 
         Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -241,21 +244,61 @@ private fun HabitItem(
             )
 
             Spacer(Modifier.size(10.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(id = R.string.days_label, habit.daysSinceCreation()),
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = textColor
+                    ),
+                    modifier = Modifier
+                        .padding(end = 7.dp)
+                )
 
-            Text(
-                text = stringResource(id = R.string.days_label, habit.daysSinceCreation()),
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = textColor
-                ),
-                modifier = Modifier
-                    .padding(end = 7.dp)
-            )
+                IconButton(
+                    onClick = {
+                        if (habit.lastBreakStreakDate.toLocalDate() != LocalDate.now()) {
+                            onFailureClick(habit)
+                        } else {
+                            scope.launch {
+                                showFailureMarkedAdvice = true
+                                delay(1700)
+                                showFailureMarkedAdvice = false
+                            }
+
+                        }
+                    }
+                ) {
+                    Icon(imageVector = Icons.Outlined.Close,
+                        contentDescription = stringResource(R.string.mark_failure_content_description))
+                }
+            }
         }
     }
 
+    if (showFailureMarkedAdvice) {
+        Box(Modifier.offset(y = (-15).dp)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(end = 15.dp)
+                    .height(18.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.Top
+            ) {
+                Text(
+                    text = stringResource(id = R.string.failure_already_recorded_info),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.fillMaxHeight()
+                )
+            }
+        }
+    } else {
+        Spacer(Modifier.size(18.dp))
+    }
     if (!isLastHabitItem) {
-        HorizontalDivider(thickness = 1.dp, modifier = Modifier.padding(vertical = 10.dp))
+        HorizontalDivider(thickness = 1.dp, modifier = Modifier.padding(bottom = 10.dp))
     }
 }
 
@@ -414,28 +457,4 @@ private fun BreakStreakTip() {
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
         )
     }
-}
-
-fun Modifier.customLongClickable(
-    longPressTimeMillis: Long = 200L,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit
-): Modifier = pointerInput(Unit) {
-    detectTapGestures(
-        onPress = {
-            val longPressed = try {
-                withTimeout(longPressTimeMillis) {
-                    awaitRelease()
-                }
-                false
-            } catch (e: TimeoutCancellationException) {
-                onLongClick()
-                true
-            }
-
-            if (!longPressed) {
-                onClick()
-            }
-        }
-    )
 }
