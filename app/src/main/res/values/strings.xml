@@ -14,6 +14,8 @@
     <string name="tip_break_streak_text">Slip up today? Long-press the habit.</string>
     <string name="confirm_break_streak_card_impact_title">It’s okay to stumble.</string>
     <string name="confirm_break_streak_card_comfort">What matters is not falling.\nDo you want to record a slip for %1$s today?</string>
+    <string name="mark_failure_content_description">mark failure</string>
+    <string name="failure_already_recorded_info">Failure already recorded today.</string>
 
 
         <!-- Action -->
