@@ -257,7 +257,7 @@ private fun HabitItem(
 
                 IconButton(
                     onClick = {
-                        if (habit.lastBreakStreakDate.toLocalDate() != LocalDate.now()) {
+                        if (habit.lastBreakStreakDate() == null || habit.lastBreakStreakDate()!!.toLocalDate() != LocalDate.now()) {
                             onFailureClick(habit)
                         } else {
                             scope.launch {
