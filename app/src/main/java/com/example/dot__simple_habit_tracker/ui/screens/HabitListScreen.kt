@@ -197,15 +197,6 @@ private fun HabitList(
                 )
             }
         }
-        if (habitList.isNotEmpty()) {
-            val areAllHabitsNew = habitList.all { habit ->
-                habit.daysSinceCreation() == 0.toLong()
-            }
-
-            if (areAllHabitsNew)
-                BreakStreakTip()
-        }
-
     }
 }
 
@@ -441,20 +432,5 @@ private fun ConfirmBreakStreakCard(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun BreakStreakTip() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.End
-    ) {
-        Text(
-            text = stringResource(R.string.tip_break_streak_text),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-        )
     }
 }
