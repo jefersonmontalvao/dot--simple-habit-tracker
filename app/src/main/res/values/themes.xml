@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="Theme.Dot"
+        parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    </style>
 
-    <style name="Theme.Dotsimplehabittracker" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.Dot.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.Dot</item>
+    </style>
 </resources>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Dot: Controle de Hábitos</string>
+    <string name="app_name">Dot — Hábitos</string>
 
     <!-- HabitListScreen -->
         <!-- ScreenHeader -->
