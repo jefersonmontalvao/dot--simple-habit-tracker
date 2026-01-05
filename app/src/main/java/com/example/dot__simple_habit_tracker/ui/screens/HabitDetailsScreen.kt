@@ -120,7 +120,8 @@ private fun HabitDetailHeader(
 
             Surface(
                 shape = RoundedCornerShape(5.dp),
-                onClick = { backArrowAction() }
+                onClick = { backArrowAction() },
+                color = Color.Transparent
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -141,7 +142,8 @@ private fun HabitDetailHeader(
 
             Surface(
                 shape = RoundedCornerShape(5.dp),
-                onClick = onDelPress
+                onClick = onDelPress,
+                color = Color.Transparent
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Delete,

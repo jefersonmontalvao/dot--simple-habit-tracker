@@ -82,7 +82,10 @@ fun InitHabitListScreen(
                 HorizontalDivider(thickness = 1.dp)
 
                 Spacer(Modifier.height(25.dp))
+
                 HabitListScreenMotivationalCard()
+
+                Spacer(Modifier.height(10.dp))
 
                 Box(
                     modifier = Modifier
@@ -127,6 +130,7 @@ private fun HabitListHeader() {
         text = stringResource(id = R.string.habit_screen_title),
         style = MaterialTheme.typography
             .headlineMedium.copy(fontWeight = FontWeight.SemiBold),
+        color = MaterialTheme.colorScheme.onBackground,
         textAlign = TextAlign.Center,
         modifier = Modifier
             .fillMaxWidth()
@@ -139,6 +143,7 @@ private fun HabitListScreenMotivationalCard() {
     Surface (
         shape = RoundedCornerShape(10.dp),
         tonalElevation = 10.dp,
+        color = MaterialTheme.colorScheme.surface
     ) {
         Row (
             verticalAlignment = Alignment.CenterVertically,
@@ -150,7 +155,8 @@ private fun HabitListScreenMotivationalCard() {
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontSize = 30.sp,
                     fontFamily = FontFamily.Serif
-                )
+                ),
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -169,10 +175,12 @@ private fun HabitList(
                     R.string.habits_quantity_nonplural_label,
                     habitList.size
                 )
+
                 habitList.size > 1 -> stringResource(
                     R.string.habits_quantity_plural_label,
                     habitList.size
                 )
+
                 else -> stringResource(
                     R.string.empty_habits_quantity_label
                 )
@@ -181,6 +189,7 @@ private fun HabitList(
                 fontWeight = FontWeight.SemiBold,
                 textAlign = if (habitList.isEmpty()) TextAlign.Center else TextAlign.Start
             ),
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .padding(vertical = 10.dp)
                 .fillMaxWidth()
@@ -223,7 +232,8 @@ private fun HabitItem(
         modifier = Modifier
             .fillMaxWidth(),
         onClick = { navigateToDetails(habit.id) },
-        shape = RoundedCornerShape(10.dp)
+        shape = RoundedCornerShape(10.dp),
+        color = Color.Transparent
     ) {
         val textColor: Color = when {
             habit.daysSinceCreation().toInt() == 0 -> Color.Red
@@ -233,6 +243,10 @@ private fun HabitItem(
         }
 
         Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 7.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -252,7 +266,7 @@ private fun HabitItem(
                         color = textColor
                     ),
                     modifier = Modifier
-                        .padding(end = 7.dp)
+                        .padding(end = 5.dp)
                 )
 
                 IconButton(
