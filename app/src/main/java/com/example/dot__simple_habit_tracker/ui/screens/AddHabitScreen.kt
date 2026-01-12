@@ -56,7 +56,7 @@ import com.example.dot__simple_habit_tracker.ui.viewmodels.HabitsViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun InitAddHabitScreen(viewModel: HabitsViewModel, backAction: () -> Unit) {
+fun InitAddHabitScreen(habitsViewModel: HabitsViewModel, backAction: () -> Unit) {
     val snackBarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -83,7 +83,7 @@ fun InitAddHabitScreen(viewModel: HabitsViewModel, backAction: () -> Unit) {
                         Spacer(Modifier.height(25.dp))
 
                         HabitInputForm(
-                            viewModel = viewModel,
+                            viewModel = habitsViewModel,
                             onHabitAdded = { habitText ->
                                 scope.launch {
                                     snackBarHostState.showSnackbar(
@@ -99,7 +99,7 @@ fun InitAddHabitScreen(viewModel: HabitsViewModel, backAction: () -> Unit) {
                         Spacer(Modifier.height(25.dp))
 
                         SuggestedHabitsSection(
-                            viewModel = viewModel,
+                            viewModel = habitsViewModel,
                             onHabitAdded = { newHabitName ->
                                 scope.launch {
                                     snackBarHostState.showSnackbar(

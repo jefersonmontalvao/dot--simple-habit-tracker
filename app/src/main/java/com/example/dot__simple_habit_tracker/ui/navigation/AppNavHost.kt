@@ -11,11 +11,13 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.dot__simple_habit_tracker.ui.screens.InitAddHabitScreen
 import com.example.dot__simple_habit_tracker.ui.screens.InitHabitDetailScreen
+import com.example.dot__simple_habit_tracker.ui.viewmodels.SettingsViewModel
 
 @Composable
 fun AppNavHost() {
     val navController = rememberNavController()
-    val viewModel: HabitsViewModel = hiltViewModel()
+    val habitsViewModel: HabitsViewModel = hiltViewModel()
+    val settingsViewModel: SettingsViewModel = hiltViewModel()
 
     NavHost(
         navController = navController,
@@ -23,7 +25,8 @@ fun AppNavHost() {
     ) {
         composable(Screen.HabitList.route) {
             InitHabitListScreen(
-                viewModel = viewModel,
+                habitsViewModel = habitsViewModel,
+                settingsViewModel = settingsViewModel,
                 navigateToAddHabit = {
                     navController.navigate(Screen.AddHabit.route)
                 },
@@ -42,14 +45,14 @@ fun AppNavHost() {
             val habitId: String = backStackEntry.arguments?.getString("habitId")?: ""
 
             InitHabitDetailScreen(
-                viewModel = viewModel,
+                habitsViewModel = habitsViewModel,
                 habitId = habitId,
                 backAction = { navController.popBackStack() })
         }
 
         composable(Screen.AddHabit.route) {
             InitAddHabitScreen(
-                viewModel = viewModel,
+                habitsViewModel = habitsViewModel,
                 backAction = { navController.popBackStack() }
             )
         }

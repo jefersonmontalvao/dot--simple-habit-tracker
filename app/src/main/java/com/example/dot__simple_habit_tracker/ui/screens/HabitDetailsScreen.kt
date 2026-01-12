@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -51,12 +50,12 @@ import com.example.dot__simple_habit_tracker.ui.viewmodels.HabitsViewModel
 
 @Composable
 fun InitHabitDetailScreen(
-    viewModel: HabitsViewModel,
+    habitsViewModel: HabitsViewModel,
     habitId: String,
     backAction: () -> Unit
     ) {
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
-    val habits: List<Habit> by viewModel.habits.collectAsState(initial = emptyList())
+    val habits: List<Habit> by habitsViewModel.habits.collectAsState(initial = emptyList())
     val habit: Habit? = habits.find { it.id == habitId }
 
     if (habit == null) {
@@ -94,7 +93,7 @@ fun InitHabitDetailScreen(
                     onConfirm = {
                         backAction()
                         showDeleteConfirmationDialog = false
-                        viewModel.delHabit(habit)
+                        habitsViewModel.delHabit(habit)
                     }
                 )
             }
@@ -147,7 +146,7 @@ private fun HabitDetailHeader(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Delete,
-                    contentDescription = "delete habit",
+                    contentDescription = stringResource(R.string.delete_habit),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier
                         .size(35.dp)

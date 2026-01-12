@@ -21,6 +21,7 @@
     <string name="action_add_habit">Novo Hábito</string>
     <string name="action_confirm_break_streak_card_fail">Falhar</string>
     <string name="action_confirm_break_streak_card_cancel">Cancelar</string>
+    <string name="action_toggle_theme">alternar tema</string>
 
     <!-- HabitDetailsScreen -->
     <!-- Label -->
