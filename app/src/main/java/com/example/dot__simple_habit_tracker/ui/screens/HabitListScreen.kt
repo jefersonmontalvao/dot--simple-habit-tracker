@@ -168,19 +168,19 @@ private fun HabitListHeader(
 
         IconButton(
             onClick = {
-                toggleDarkMode(!isDarkMode)
-                themeIconResource = if (themeIconResource == R.drawable.light_ic_theme) {
-                    R.drawable.dark_ic_theme
+                if (isDarkMode) {
+                    themeIconResource = R.drawable.light_ic_theme
+                    toggleDarkMode(false)
                 } else {
-                    R.drawable.light_ic_theme
+                    themeIconResource = R.drawable.dark_ic_theme
+                    toggleDarkMode(true)
                 }
-                toggleDarkMode(!isDarkMode)
             }
         ) {
             Icon(
                 modifier = Modifier.size(35.dp),
                 painter = painterResource(themeIconResource),
-                contentDescription = stringResource(R.string.action_toggle_theme)
+                contentDescription = stringResource(R.string.action_toggle_theme    )
             )
         }
     }
