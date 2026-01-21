@@ -92,7 +92,7 @@ fun InitHabitListScreen(
     LaunchedEffect(canRequestReview) {
         if(canRequestReview) {
             launchInAppReview(activity = activity)
-//            inAppReviewViewModel.onReviewRequested() TODO
+            inAppReviewViewModel.onReviewRequested()
         }
     }
     LaunchedEffect(!habits.isEmpty()) {
