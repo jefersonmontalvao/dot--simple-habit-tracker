@@ -10,9 +10,14 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class HabitRepository @Inject constructor(
+class HabitsRepository @Inject constructor(
     private val dao: HabitDao
 ) {
+    val longestHabitStreak: Flow<Int> =
+        getHabits().map { habits ->
+            habits.maxOfOrNull { it.maxStreak().toInt() } ?: 0
+        }
+
     fun getHabits(): Flow<List<Habit>> {
         return dao.getAll().map { flowsList ->
             flowsList.map { it.toDomain() }
