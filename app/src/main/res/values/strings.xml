@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Dot: Habit Tracker</string>
+    <string name="app_name">Dot — Habits</string>
 
     <!-- HabitListScreen -->
         <!-- ScreenHeader -->
@@ -22,6 +22,7 @@
     <string name="action_add_habit">New Habit</string>
     <string name="action_confirm_break_streak_card_fail">Fail</string>
     <string name="action_confirm_break_streak_card_cancel">Cancel</string>
+    <string name="action_toggle_theme">toggle theme</string>
 
     <!-- HabitDetailsScreen -->
         <!-- Label -->

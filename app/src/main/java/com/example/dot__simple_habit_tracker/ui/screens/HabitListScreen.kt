@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -42,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -56,6 +58,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.dot__simple_habit_tracker.R
 import com.example.dot__simple_habit_tracker.domain.models.Habit
 import com.example.dot__simple_habit_tracker.ui.viewmodels.HabitsViewModel
+import com.example.dot__simple_habit_tracker.ui.viewmodels.SettingsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -64,12 +67,14 @@ import java.time.LocalDate
 @Composable
     
 fun InitHabitListScreen(
-    viewModel: HabitsViewModel,
+    habitsViewModel: HabitsViewModel,
+    settingsViewModel: SettingsViewModel,
     navigateToAddHabit: () -> Unit,
     navigateToHabitDetails: (String) -> Unit
 ) {
     var habitToBreakStreak by remember { mutableStateOf<Habit?>(null) }
-    val habits: List<Habit> by viewModel.habits.collectAsState(initial = emptyList())
+    val habits: List<Habit> by habitsViewModel.habits.collectAsState(initial = emptyList())
+    val darkModeEnabled: Boolean by settingsViewModel.darkMode.collectAsState(initial = false)
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
@@ -77,12 +82,18 @@ fun InitHabitListScreen(
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
             ) {
-                HabitListHeader()
+                HabitListHeader(
+                    isDarkMode = darkModeEnabled,
+                    toggleDarkMode = { settingsViewModel.toggleDarkMode(enable = it) }
+                )
 
                 HorizontalDivider(thickness = 1.dp)
 
                 Spacer(Modifier.height(25.dp))
+
                 HabitListScreenMotivationalCard()
+
+                Spacer(Modifier.height(10.dp))
 
                 Box(
                     modifier = Modifier
@@ -112,7 +123,7 @@ fun InitHabitListScreen(
                     habit = habit,
                     onConfirm = {
                         val updatedHabit = habit.updateStreak()
-                        viewModel.updateHabit(updatedHabit)
+                        habitsViewModel.updateHabit(updatedHabit)
                         habitToBreakStreak = null
                                 },
                     onDismiss = { habitToBreakStreak = null }
@@ -122,16 +133,57 @@ fun InitHabitListScreen(
 }
 
 @Composable
-private fun HabitListHeader() {
-    Text(
-        text = stringResource(id = R.string.habit_screen_title),
-        style = MaterialTheme.typography
-            .headlineMedium.copy(fontWeight = FontWeight.SemiBold),
-        textAlign = TextAlign.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 25.dp),
+private fun HabitListHeader(
+    isDarkMode: Boolean,
+    toggleDarkMode: (Boolean) -> Unit
+    ) {
+    var themeIconResource by remember {
+        mutableIntStateOf(
+            value = if (isDarkMode) {
+                R.drawable.dark_ic_theme
+            } else {
+                R.drawable.light_ic_theme
+            }
         )
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Spacer(
+            modifier = Modifier.size(35.dp)
+        )
+        Text(
+            text = stringResource(id = R.string.habit_screen_title),
+            style = MaterialTheme.typography
+                .headlineMedium.copy(fontWeight = FontWeight.SemiBold),
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(vertical = 25.dp),
+        )
+
+        IconButton(
+            onClick = {
+                if (isDarkMode) {
+                    themeIconResource = R.drawable.light_ic_theme
+                    toggleDarkMode(false)
+                } else {
+                    themeIconResource = R.drawable.dark_ic_theme
+                    toggleDarkMode(true)
+                }
+            }
+        ) {
+            Icon(
+                modifier = Modifier.size(35.dp),
+                painter = painterResource(themeIconResource),
+                contentDescription = stringResource(R.string.action_toggle_theme    )
+            )
+        }
+    }
 }
 
 @Composable
@@ -139,6 +191,7 @@ private fun HabitListScreenMotivationalCard() {
     Surface (
         shape = RoundedCornerShape(10.dp),
         tonalElevation = 10.dp,
+        color = MaterialTheme.colorScheme.surface
     ) {
         Row (
             verticalAlignment = Alignment.CenterVertically,
@@ -150,7 +203,8 @@ private fun HabitListScreenMotivationalCard() {
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontSize = 30.sp,
                     fontFamily = FontFamily.Serif
-                )
+                ),
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -169,10 +223,12 @@ private fun HabitList(
                     R.string.habits_quantity_nonplural_label,
                     habitList.size
                 )
+
                 habitList.size > 1 -> stringResource(
                     R.string.habits_quantity_plural_label,
                     habitList.size
                 )
+
                 else -> stringResource(
                     R.string.empty_habits_quantity_label
                 )
@@ -181,6 +237,7 @@ private fun HabitList(
                 fontWeight = FontWeight.SemiBold,
                 textAlign = if (habitList.isEmpty()) TextAlign.Center else TextAlign.Start
             ),
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .padding(vertical = 10.dp)
                 .fillMaxWidth()
@@ -214,7 +271,8 @@ private fun HabitItem(
         modifier = Modifier
             .fillMaxWidth(),
         onClick = { navigateToDetails(habit.id) },
-        shape = RoundedCornerShape(10.dp)
+        shape = RoundedCornerShape(10.dp),
+        color = Color.Transparent
     ) {
         val textColor: Color = when {
             habit.daysSinceCreation().toInt() == 0 -> Color.Red
@@ -224,6 +282,10 @@ private fun HabitItem(
         }
 
         Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 7.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -243,7 +305,7 @@ private fun HabitItem(
                         color = textColor
                     ),
                     modifier = Modifier
-                        .padding(end = 7.dp)
+                        .padding(end = 5.dp)
                 )
 
                 IconButton(
