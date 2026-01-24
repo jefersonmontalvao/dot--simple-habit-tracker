@@ -11,6 +11,8 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.dot__simple_habit_tracker.ui.screens.InitAddHabitScreen
 import com.example.dot__simple_habit_tracker.ui.screens.InitHabitDetailScreen
+import com.example.dot__simple_habit_tracker.ui.viewmodels.AppUsageViewModel
+import com.example.dot__simple_habit_tracker.ui.viewmodels.InAppReviewViewModel
 import com.example.dot__simple_habit_tracker.ui.viewmodels.SettingsViewModel
 
 @Composable
@@ -18,6 +20,8 @@ fun AppNavHost() {
     val navController = rememberNavController()
     val habitsViewModel: HabitsViewModel = hiltViewModel()
     val settingsViewModel: SettingsViewModel = hiltViewModel()
+    val inAppReviewViewModel: InAppReviewViewModel = hiltViewModel()
+    val appUsageViewModel: AppUsageViewModel = hiltViewModel()
 
     NavHost(
         navController = navController,
@@ -27,6 +31,8 @@ fun AppNavHost() {
             InitHabitListScreen(
                 habitsViewModel = habitsViewModel,
                 settingsViewModel = settingsViewModel,
+                appUsageViewModel = appUsageViewModel,
+                inAppReviewViewModel = inAppReviewViewModel,
                 navigateToAddHabit = {
                     navController.navigate(Screen.AddHabit.route)
                 },

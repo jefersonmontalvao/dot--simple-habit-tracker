@@ -88,4 +88,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.9.6")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.36.0")
 
+    // InAppReview
+    implementation("com.google.android.play:review:2.0.2")
+    implementation("com.google.android.play:review-ktx:2.0.2")
+
 }

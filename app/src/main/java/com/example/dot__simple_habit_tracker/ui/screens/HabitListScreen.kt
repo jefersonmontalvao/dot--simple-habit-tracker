@@ -1,5 +1,7 @@
 package com.example.dot__simple_habit_tracker.ui.screens
 
+import android.app.Activity
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +35,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -43,6 +46,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -57,8 +61,11 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.dot__simple_habit_tracker.R
 import com.example.dot__simple_habit_tracker.domain.models.Habit
+import com.example.dot__simple_habit_tracker.ui.viewmodels.AppUsageViewModel
 import com.example.dot__simple_habit_tracker.ui.viewmodels.HabitsViewModel
+import com.example.dot__simple_habit_tracker.ui.viewmodels.InAppReviewViewModel
 import com.example.dot__simple_habit_tracker.ui.viewmodels.SettingsViewModel
+import com.google.android.play.core.review.ReviewManagerFactory
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -69,12 +76,33 @@ import java.time.LocalDate
 fun InitHabitListScreen(
     habitsViewModel: HabitsViewModel,
     settingsViewModel: SettingsViewModel,
+    appUsageViewModel: AppUsageViewModel,
+    inAppReviewViewModel: InAppReviewViewModel,
     navigateToAddHabit: () -> Unit,
     navigateToHabitDetails: (String) -> Unit
 ) {
+    val context: Context = LocalContext.current
+    val activity: Activity = context as? Activity ?: return
     var habitToBreakStreak by remember { mutableStateOf<Habit?>(null) }
+    val longestHabitStreak: Int by habitsViewModel.longestStreak.collectAsState(initial = 0)
     val habits: List<Habit> by habitsViewModel.habits.collectAsState(initial = emptyList())
     val darkModeEnabled: Boolean by settingsViewModel.darkMode.collectAsState(initial = false)
+    val canRequestReview: Boolean by inAppReviewViewModel.canRequestInAppReview.collectAsState(initial = false)
+
+    LaunchedEffect(canRequestReview) {
+        if(canRequestReview) {
+            launchInAppReview(activity = activity)
+            inAppReviewViewModel.onReviewRequested()
+        }
+    }
+    LaunchedEffect(!habits.isEmpty()) {
+        appUsageViewModel.markOpenedAppWithActiveHabits()
+    }
+    LaunchedEffect(longestHabitStreak) {
+        if (longestHabitStreak >= 3) {
+            appUsageViewModel.markReached3DayHabitCleanStreak()
+        }
+    }
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
@@ -493,6 +521,18 @@ private fun ConfirmBreakStreakCard(
                     }
                 }
             }
+        }
+    }
+}
+
+private fun launchInAppReview(activity: Activity) {
+    val reviewManager = ReviewManagerFactory.create(activity)
+
+    val request = reviewManager.requestReviewFlow()
+    request.addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            val reviewInfo = task.result
+            reviewManager.launchReviewFlow(activity, reviewInfo)
         }
     }
 }
